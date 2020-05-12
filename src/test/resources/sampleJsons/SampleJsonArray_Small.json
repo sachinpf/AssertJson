@@ -1,0 +1,86 @@
+[
+  {
+    "ID": 1,
+    "BookInfo": {
+      "BookName": "My Book 1",
+      "Category": [
+        "Fiction",
+        "Drama",
+        "Suspense"
+      ],
+      "PublicationYear": 2010,
+      "BookPrice": 20,
+      "SellingCurrency": "US-$",
+      "WebSite": "https://www.amazonsite.com/book_id?=549584"
+    },
+    "InventoryInfo": {
+      "OutOfStock": false,
+      "LastStockCheckedDate": "2019-04-09T11:59:23Z",
+      "DecimalValue": 12,
+      "AutoReorder": "N"
+    },
+    "CountriesSold": {
+      "USA": true,
+      "CAN": false,
+      "India": true
+    },
+    "SellerInfo": {
+      "WholeSellerName": "MyBookStore",
+      "WholeSellerCoordinates": {
+        "X": -3.7037901999999576,
+        "Y": 40.00023
+      },
+      "SellerPhoneNumber": 9999999999
+    },
+    "ImagesPath": [
+      "https://mybooks.com/v1/ids/images/8962-1b16aac14a37_bookimage1.jpg",
+      "https://mybooks.com/v1/ids/images/8962-1b16aac14a37_bookimage2.jpg",
+      "https://mybooks.com/v1/ids/images/8962-1b16aac14a37_bookimage3.jpg",
+      "https://mybooks.com/v1/ids/images/8962-1b16aac14a37_bookimage4.jpg"
+    ],
+    "DeliveryAvailable": 0
+  },
+  {
+    "ID": 2,
+    "BookInfo": {
+      "BookName": "My Book 2",
+      "Category": [
+        "Fiction",
+        "Drama",
+        "Suspense",
+        "Other"
+      ],
+      "PublicationYear": 2011,
+      "BookPrice": 22,
+      "SellingCurrency": "US-$",
+      "WebSite": "https://www.amazonsite.com/book_id?=549584"
+    },
+    "InventoryInfo": {
+      "OutOfStock": false,
+      "LastStockCheckedDate": "2018-05-09T11:59:23Z",
+      "DecimalValue": 122,
+      "AutoReorder": "Y"
+    },
+    "CountriesSold": {
+      "USA": false,
+      "CAN": false,
+      "India": true,
+      "Srilanka": true
+    },
+    "SellerInfo": {
+      "WholeSellerName": "MyBookStore",
+      "WholeSellerCoordinates": {
+        "X": -13.799999576,
+        "Y": -91.023
+      },
+      "SellerPhoneNumber": 88888888
+    },
+    "ImagesPath": [
+      "https://mybooks.com/v1/ids/images/9898-1b16aac14asdfa37_bookimage1.jpg",
+      "https://mybooks.com/v1/ids/images/9899-1b16aacadsf14a37rd_bookimage2.jpg",
+      "https://mybooks.com/v1/ids/images/9897-1b16adfaac14a37er_bookimage3.jpg",
+      "https://mybooks.com/v1/ids/images/9896-1b16aac14aaewrt37_bookimage4.jpg"
+    ],
+    "DeliveryAvailable": 1
+  }
+]
