@@ -1,0 +1,55 @@
+{
+  ".id": 1,
+  ".bookinfo.bookname": "My Book 1",
+  ".bookinfo.category": [
+    "Fiction",
+    "Drama",
+    "Suspense"
+  ],
+  ".bookinfo.publicationyear": 2010,
+  ".bookinfo.bookprice": 20,
+  ".bookinfo.sellingcurrency": "US-$",
+  ".bookinfo.website": "www.site.com/book_id?=549584",
+  ".testjsonobjectarray0.test1": "someTest1",
+  ".testjsonobjectarray0.test2": "someTest2",
+  ".testjsonobjectarray1.test1": "someTest1",
+  ".testjsonobjectarray1.test2": "someTest2",
+  ".numberarray": [
+    2,
+    3,
+    5,
+    8
+  ],
+  ".numberarraywithquotes": [
+    88,
+    85,
+    99,
+    108
+  ],
+  ".numberarraywithsquaresinquotes": [
+    34,
+    38,
+    21,
+    22,
+    23,
+    3
+  ],
+  ".decimalarray": [
+    2.888,
+    3.999,
+    9.18,
+    1880.8
+  ],
+  ".blankarray": [],
+  ".inventoryinfo.outofstock": "false",
+  ".inventoryinfo.autoreorder": "N",
+  ".inventoryinfo.laststockcheckeddate": "2019-04-09T11:59:23Z",
+  ".inventoryinfo.decimalvalue": 12,
+  ".countriessold.usa": true,
+  ".countriessold.can": false,
+  ".countriessold.india": true,
+  ".sellerinfo.wholesellername": "My Book Store",
+  ".sellerinfo.wholesellercoordinates.x": -3.7037901999999576,
+  ".sellerinfo.wholesellercoordinates.y": 40.00023,
+  ".sellerinfo.sellerphonenumber": "9999999999"
+}

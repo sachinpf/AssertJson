@@ -1,4 +1,4 @@
-package org.utils;
+package testUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import org.testng.Reporter;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -43,13 +44,15 @@ public class FileUtils {
     public static String readFile(String filePath) {
         URL url = FileUtils.class.getResource(filePath);
         try  {
-            return Files.readString(Paths.get(url.getPath()));
+            return Files.readString(Paths.get(url.toURI()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Reporter.log(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             Reporter.log(e.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
         return "Unable to read a file.";
     }
@@ -91,7 +94,6 @@ public class FileUtils {
         return null;
     }
 
-
     public static String writeToFile(JsonObject obj, String fileName) {
         if(fileName==null)
             fileName = outputDirectory + "/jObjectFile_" + (++counter) + ".json";
@@ -115,7 +117,6 @@ public class FileUtils {
         return null;
     }
 
-
     public static String writeToFile(JsonArray obj, String fileName) {
         if(fileName==null)
             fileName = outputDirectory + "/jObjectFile_" + (++counter) + ".json";
@@ -138,6 +139,5 @@ public class FileUtils {
         }
         return null;
     }
-
 
 }

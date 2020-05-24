@@ -1,12 +1,10 @@
-package testData.pojo;
+package testUtils.testDataCreator.pojo;
 
 import com.google.gson.JsonObject;
-import lombok.Data;
-import testData.pojo.random.RandomGenerator;
+import testUtils.testDataCreator.pojo.random.RandomGenerator;
 
 import java.util.Objects;
 
-@Data
 public class InventoryInfo {
     private boolean outOfStock;
     private String lastStockCheckedDate;
@@ -45,5 +43,22 @@ public class InventoryInfo {
         r.addProperty("DecimalValue", decimalValue);
         r.addProperty("AutoReorder", autoReorder);
         return r;
+    }
+
+
+    public boolean isOutOfStock() {
+        return outOfStock;
+    }
+
+    public String getLastStockCheckedDate() {
+        return lastStockCheckedDate;
+    }
+
+    public float getDecimalValue() {
+        return decimalValue;
+    }
+
+    public String getAutoReorder() {
+        return autoReorder;
     }
 }

@@ -1,9 +1,9 @@
-package org.helpers;
+package testUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import org.testng.Reporter;
-import org.utils.FileUtils;
 
 public class ReportSteps extends Reporter {
 
@@ -16,14 +16,13 @@ public class ReportSteps extends Reporter {
     }
 
     public static void addJsonToReport(JsonObject obj, String message) {
-        String f = FileUtils.writeToFile(obj,message);
+        String f = FileUtils.writeToFile(obj, null);
         Reporter.log("<a href=" + "\\JsonDeepEqual/" + f + ">" + message + "</a>");
     }
 
     public static void addJsonToReport(JsonArray obj, String message) {
-        String f = FileUtils.writeToFile(obj, message);
+        String f = FileUtils.writeToFile(obj, null);
         Reporter.log("<a href=" + "\\JsonDeepEqual/" + f + ">" + message + "</a>");
     }
-
 
 }

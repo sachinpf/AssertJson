@@ -1,7 +1,6 @@
-package testData.pojo.random;
+package testUtils.testDataCreator.pojo.random;
 
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 import java.util.Random;
 
 public class RandomGenerator {

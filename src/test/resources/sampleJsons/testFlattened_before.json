@@ -1,0 +1,64 @@
+{
+  "ID": 1,
+  "BookInfo": {
+    "BookName": "My Book 1",
+    "Category": [
+      "Fiction",
+      "Drama",
+      "Suspense"
+    ],
+    "PublicationYear": 2010,
+    "BookPrice": 20.00,
+    "SellingCurrency": "US-$",
+    "WebSite": "www.site.com/book_id?=549584"
+  },
+  "TestJsonObjectArray": [
+    {
+      "test1": "someTest1",
+      "test2": "someTest2"
+    },
+    {
+      "test1": "someTest1",
+      "test2": "someTest2"
+    }
+  ],
+  "numberArray": [
+    2,
+    3,
+    5,
+    8
+  ],
+  "numberArrayWithQuotes": [
+    "88",
+    "85",
+    "99",
+    "108"
+  ],
+  "numberArrayWithSquaresInQuotes": "[34,38,21,22,23,34]",
+  "decimalArray": [
+    2.888,
+    3.999,
+    9.18,
+    1880.8000
+  ],
+  "blankArray": [],
+  "InventoryInfo": {
+    "OutOfStock": "false",
+    "AutoReorder": "N",
+    "LastStockCheckedDate": "2019-04-09T11:59:23Z",
+    "DecimalValue": "12"
+  },
+  "CountriesSold": {
+    "USA": true,
+    "CAN": false,
+    "India": true
+  },
+  "SellerInfo": {
+    "WholeSellerName": "My    Book      Store",
+    "WholeSellerCoordinates": {
+      "X": -3.7037901999999576,
+      "Y": 40.00023
+    },
+    "SellerPhoneNumber": "9999999999"
+  }
+}
