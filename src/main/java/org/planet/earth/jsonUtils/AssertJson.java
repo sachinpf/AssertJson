@@ -5,14 +5,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import org.planet.earth.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.earth.jsonUtils.exceptions.JsonArraySizeExceeds;
+import org.planet.earth.jsonUtils.exceptions.NoJsonObjectArray;
+import org.planet.earth.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
+import org.planet.earth.jsonUtils.support.DateObject;
 import org.planet.earth.jsonUtils.support.Flatten;
+import org.planet.earth.jsonUtils.support.KeyIndexCallable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public final class AssertJson {
@@ -51,7 +55,7 @@ public final class AssertJson {
     private List<String> doNotAssertKeys;
 
     private int maxFailureCount; //applicable for JsonArray (having many jsonObjects) to be compared.
-
+    private int assertFirstXRows; //applicable for Json Array, iterates only first X numbers from firstArray
     private boolean normalizeDateFormat;
     private boolean transformBoolean; //#9 and #10
     private boolean caseSensitive;//#11
@@ -76,6 +80,7 @@ public final class AssertJson {
 
         //JsonArray assertion
         maxFailureCount = 50;
+        assertFirstXRows = 1000;
 
         //depending on other object
         transformBoolean = false;
@@ -86,14 +91,94 @@ public final class AssertJson {
         secondObjectName = "secondObject";
     }
 
+    //method to assert Two Json Arrays by given ID
+    //just pass in the IdKeyName
+    public List<JsonObjectAssertion> assertJsonArray(JsonArray firstArray,
+                                                     JsonArray secondArray,
+                                                     String IdKeyName)
+            throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds {
 
+        //Step 1: ensuring none of the arrays are null or size zero
+        if (firstArray == null || secondArray == null || firstArray.size() <= 0 || secondArray.size() <= 0)
+            throw new ZeroOrNullSizeJsonArray();
+
+        //Step 2: ensuring it's JsonObject array
+        if (!firstArray.get(0).isJsonObject() || !secondArray.get(0).isJsonObject())
+            throw new NoJsonObjectArray();
+
+        //Step 3: if the size difference is greater than 500
+        if (firstArray.size() - secondArray.size() >= 500)
+            throw new JsonArraySizeExceeds();
+
+        //Step 4: creating ID for each element in SecondArray
+        int maxSize = Math.min(firstArray.size(), assertFirstXRows);
+        Map<Object, Integer> indexForSecondArray = getKeyIndices(IdKeyName, secondArray, IdKeyName);
+
+
+        //Step 5: asserting two json objects within JsonArray
+
+
+        /*for (int i = 0; i < maxSize; i++) {
+            JsonObject obj1 = firstArray.get(i).getAsJsonObject();
+            Object id = gson.fromJson(obj1.get(IdKeyName), Object.class);
+            Spliterator<JsonElement> spliterator = secondArray.spliterator();
+
+            System.out.println("spliterator.trySplit(): " + spliterator.estimateSize());
+
+            JsonObject obj2 = findObjectById(id, secondArray);
+        }*/
+
+        return null;
+    }
+
+    //All private methods for JsonArray assertion
+    //method to locate object by ID
+    private Map<Object, Integer> getKeyIndices(Object id, JsonArray secondArray, String IdKeyName) {
+
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+
+        //Step 1 - Finding splitSize based on available available processors
+        int arraySize = secondArray.size();
+        int eachSplitMax;
+        boolean oddSize = arraySize % 2 == 0;
+        if (oddSize)
+            eachSplitMax = 1 + (arraySize / availableProcessors);
+        else
+            eachSplitMax = (arraySize / availableProcessors);
+
+        //Step 2 - Starting Threads and creating indices for each given key
+        ExecutorService executorService = Executors.newFixedThreadPool(availableProcessors);
+        Map<Object, Integer> returnMap = new HashMap<>();
+
+        int startNumber = 0;
+        int endNumber = eachSplitMax;
+        for (int i = 0; i < availableProcessors; i++) {
+            try {
+                //System.out.println("now i: " + i);
+                Callable<Map<Object, Integer>> callable =
+                        new KeyIndexCallable(startNumber, endNumber, secondArray, IdKeyName);
+                Future<Map<Object, Integer>> future = executorService.submit(callable);
+                startNumber = endNumber + 1;
+                endNumber += eachSplitMax + 1;
+                returnMap.putAll(future.get());
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("return Map: " + returnMap);
+
+        return returnMap;
+    }
+
+    //method to assert Two Json Objects
     public JsonObjectAssertion assertJsonObject(JsonObject firstObject,
                                                 JsonObject secondObject) throws ExceedsLimitOfObjectSize {
         return assertJsonObject(firstObject, secondObject, null);
     }
 
 
-    //All private methods
+    //All private methods for JsonObject assertion
     private JsonObjectAssertion assertJsonObject(JsonObject firstObject,
                                                  JsonObject secondObject, Object ID) throws ExceedsLimitOfObjectSize {
         //Object that stores mismatches
@@ -213,8 +298,9 @@ public final class AssertJson {
                         status = true;
                 } else if (normalizeDateFormat)  //finally normalizing date
                 {
-                    LocalDateTime obj2 = (LocalDateTime) getDateIfDate(secondObjectValue.toString());
-                    LocalDateTime obj1 = (LocalDateTime) getDateIfDate(firstObjectValue.toString());
+                    DateObject dateObject = new DateObject(ignoreSeconds);
+                    LocalDateTime obj1 = (LocalDateTime) dateObject.getDateIfDate(firstObjectValue.toString());
+                    LocalDateTime obj2 = (LocalDateTime) dateObject.getDateIfDate(secondObjectValue.toString());
 
                     if (obj1 != null && obj2 != null && obj1.isEqual(obj2)) {
                         status = true;
@@ -261,231 +347,6 @@ public final class AssertJson {
         //add all your transform values as needed
     }
 
-    //matches given string with date format
-    private Object getDateIfDate(String dateTime) {
-        //Pattern 1 - Matching format: "2018-08-30T06:28:13Z"
-        {
-            String re1 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3}))[-:\\/.](?:[0]?[1-9]|[1][012])[-:\\/.](?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // YYYYMMDD 1
-            String re2 = "([a-z])";    // Any Single Word Character (Not Whitespace) 1
-            String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re4 = "((?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-            String re5 = "(Z)";    // Any Single Word Character (Not Whitespace) 2
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4 + re5, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-
-            if (m.find()) {
-                String date = m.group(1);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(3);
-                else
-                    time = m.group(3) + m.group(4);
-
-                return LocalDateTime.parse(date + "T" + time);
-            }
-        }
-
-        //Pattern 2 - Matching format: "2019-02-16T06:38:49.349Z"
-        {
-            String re1 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3}))[-:\\/.](?:[0]?[1-9]|[1][012])[-:\\/.](?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // YYYYMMDD 1
-            String re2 = "([a-z])";    // Any Single Word Character (Not Whitespace) 1
-            String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re4 = "((?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-            // String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";    // HourMinuteSec 1
-            String re5 = "(\\.)";    // Any Single Character 1
-            String re6 = "(\\d)";    // Any Single Digit 1
-            String re7 = "(\\d)";    // Any Single Digit 2
-            String re8 = "(\\d)";    // Any Single Digit 3
-            String re9 = "(Z)";    // Any Single Word Character (Not Whitespace) 2
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4 + re5 + re6 + re7 + re8 + re9, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-            if (m.find()) {
-                String date = m.group(1);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(3);
-                else
-                    time = m.group(3) + m.group(4);
-
-                return LocalDateTime.parse(date + "T" + time);
-            }
-        }
-
-        //Pattern 3 - Matching format: "Fri Feb 15 22:38:49 PST 2019"
-        {
-            String re1 = "((?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Tues|Thur|Thurs|Sun|Mon|Tue|Wed|Thu|Fri|Sat))";    // Day Of Week 1
-            String re2 = "(\\s+)";    // White Space 1
-            String re3 = "((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?))";    // Month 1
-            String re4 = "(\\s+)";    // White Space 2
-            String re5 = "((?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // Day 1
-            String re6 = "(\\s+)";    // White Space 3
-            //String re7 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";    // HourMinuteSec 1
-            String re7 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re8 = "((?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-            String re9 = "(\\s+)";    // White Space 4
-            String re10 = "((?:[a-z][a-z]+))";    // TimeZone like PST
-            String re11 = "(\\s+)";    // White Space 5
-            String re12 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])";    // Year 1
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4 + re5 + re6 + re7 + re8 + re9 + re10 + re11 + re12, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-            if (m.find()) {
-                String monthNumber = findMonthNumber(m.group(3));
-                String date = m.group(12) + "-" + monthNumber + "-" + m.group(5);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(7);
-                else
-                    time = m.group(7) + m.group(8);
-
-                return LocalDateTime.parse(date + "T" + time);
-            }
-        }
-
-        //Pattern 4 - Matching format: "May 23, 2019 11:25:43"
-        {
-            String re1 = "((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?))";    // Month 1
-            String re2 = "(\\s+)";    // White Space 1
-            String re3 = "((?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // Day 1
-            String re4 = "(,)";    // Any Single Character 1
-            String re5 = "(\\s+)";    // White Space 2
-            String re6 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])";    // Year 1
-            String re7 = "(\\s+)";    // White Space 3
-            //String re8 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";    // HourMinuteSec 1
-            String re8 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re9 = "((?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4 + re5 + re6 + re7 + re8 + re9, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-            if (m.find()) {
-                String monthNumber = findMonthNumber(m.group(1));
-                System.out.println(monthNumber);
-                String date = m.group(6) + "-" + monthNumber + "-" + m.group(3);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(8);
-                else
-                    time = m.group(8) + m.group(9);
-
-                return LocalDateTime.parse(date + "T" + time);
-            }
-        }
-
-        //Pattern 5 - Matching format: "2012-05-23 11:25:43"
-        {
-            String re1 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3}))[-:\\/.](?:[0]?[1-9]|[1][012])[-:\\/.](?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // YYYYMMDD 1
-            String re2 = "(\\s+)";    // White Space 1
-            //String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";    // HourMinuteSec 1
-            String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re4 = "((?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-            if (m.find()) {
-                String date = m.group(1);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(3);
-                else
-                    time = m.group(3) + m.group(4);
-
-                return LocalDateTime.parse((date + "T" + time));
-            }
-        }
-
-        //Pattern 6 -Matching format: "2019-12-31T00:18:45.805263"
-        {
-            String re1 = "((?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3}))[-:\\/.](?:[0]?[1-9]|[1][012])[-:\\/.](?:(?:[0-2]?\\d{1})|(?:[3][01]{1})))(?![\\d])";    // YYYYMMDD 1
-            String re2 = "([a-z])";    // Any Single Word Character (Not Whitespace) 1
-            //String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";    // old one HourMinuteSec 1
-            String re3 = "((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9]))";    // HourMinute
-            String re4 = "((?::[0-9][0-9][0-9][0-9][0-9][0-9])?(?:\\s?(?:am|AM|pm|PM))?)";
-            // String re5 = "(Z)";    // Any Single Word Character (Not Whitespace) 2
-
-            Pattern p = Pattern.compile(re1 + re2 + re3 + re4, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher m = p.matcher(dateTime);
-            if (m.find()) {
-                String date = m.group(1);
-                String time;
-                if (ignoreSeconds)
-                    time = m.group(3);
-                else
-                    time = m.group(3) + m.group(4);
-
-                return LocalDateTime.parse(date + "T" + time);
-            }
-        }
-        return null;
-    }//method end
-
-    //find Month Number
-    private String findMonthNumber(String monthName) {
-        String monthNumber = "";
-        switch (monthName) {
-            case "Jan":
-            case "January": {
-                monthNumber = "01";
-                break;
-            }
-            case "Feb":
-            case "February": {
-                monthNumber = "02";
-                break;
-            }
-            case "March":
-            case "Mar": {
-                monthNumber = "03";
-                break;
-            }
-            case "April":
-            case "Apr": {
-                monthNumber = "04";
-                break;
-            }
-            case "May": {
-                monthNumber = "05";
-                break;
-            }
-            case "June":
-            case "Jun": {
-                monthNumber = "06";
-                break;
-            }
-            case "July":
-            case "Jul": {
-                monthNumber = "07";
-                break;
-            }
-            case "August":
-            case "Aug": {
-                monthNumber = "08";
-                break;
-            }
-            case "September":
-            case "Sep": {
-                monthNumber = "09";
-                break;
-            }
-            case "October":
-            case "Oct": {
-                monthNumber = "10";
-                break;
-            }
-            case "November":
-            case "Nov": {
-                monthNumber = "11";
-                break;
-            }
-            case "December":
-            case "Dec": {
-                monthNumber = "12";
-                break;
-            }
-        }
-        return monthNumber;
-    }//switch statement
 
     //setters and getters
     public void setMaxSizeOfKeysInObject(int maxSizeOfKeysInObject) {
@@ -533,6 +394,10 @@ public final class AssertJson {
 
     public void setIgnoreSeconds(boolean ignoreSeconds) {
         this.ignoreSeconds = ignoreSeconds;
+    }
+
+    public void setAssertFirstXRows(int assertFirstXRows) {
+        this.assertFirstXRows = assertFirstXRows;
     }
 }
 

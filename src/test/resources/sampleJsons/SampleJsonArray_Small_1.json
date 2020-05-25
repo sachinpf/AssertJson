@@ -111,6 +111,7 @@
     },
     "Seller Info": {
       "Whole SellerName": "My    Book      Store",
+      "Other text with spaces": "some    text to      normalize      spaces",
       "Whole SellerCoordinates": {
         "X": -3.7037901999999576,
         "Y": 40.00023

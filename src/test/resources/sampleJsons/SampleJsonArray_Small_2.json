@@ -1,6 +1,6 @@
 [
   {
-    "Book ID": 1,
+    "ID": 1,
     "Book Info": {
       "Book_Name": "MY BOOK 1",
       "Category": "[DRAMA,Suspense,Fiction]",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "Book ID": 2,
+    "ID": 2,
     "Book Info": {
       "Book_Name": "MY BOOK 2",
       "Category": "[Suspense,DRAMA,Fiction]",
@@ -60,7 +60,7 @@
     }
   },
   {
-    "Book ID": 3,
+    "ID": 3,
     "number Array With Squares In Quotes": "[34,38,21,22,23,34]",
     "testArray": [
       10,
@@ -77,7 +77,7 @@
     "Inventory Info": {
       "Out Of Stock": "false",
       "Auto Reorder": false,
-      "Last Stock Checked Date": "2019-04-09T11:59:23Z",
+      "Last Stock Checked Date": "2019-04-09T11:59:25Z",
       "Decimal Value": "12"
     },
     "Countries Sold": {
@@ -86,6 +86,7 @@
       "India": true
     },
     "Seller Info": {
+      "Other text with spaces": "some text to normalize spaces",
       "Whole SellerCoordinates": {
         "X": -3.7037901999999576,
         "Y": 40.00023

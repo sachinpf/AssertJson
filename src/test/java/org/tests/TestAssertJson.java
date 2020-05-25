@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 import org.planet.earth.jsonUtils.AssertJson;
 import org.planet.earth.jsonUtils.JsonObjectAssertion;
 import org.planet.earth.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.earth.jsonUtils.exceptions.JsonArraySizeExceeds;
+import org.planet.earth.jsonUtils.exceptions.NoJsonObjectArray;
+import org.planet.earth.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import testUtils.FileUtils;
@@ -15,8 +18,8 @@ import java.util.Arrays;
 
 public class TestAssertJson {
 
-    private JsonArray firstObject;
-    private JsonArray secondObject;
+    private JsonArray firstArray;
+    private JsonArray secondArray;
     private String testFileName1 = "TestJsonArray_1.json";
     private String testFileName2 = "TestJsonArray_2.json";
 
@@ -28,14 +31,14 @@ public class TestAssertJson {
         ReportSteps.addINFO("Step 1: Creating test json array 1:");
         DataCreator testData1 = new DataCreator();
         testData1.createFirstTypeOfData(20, testFileName1);
-
         ReportSteps.addINFO("Step 2: Creating test json array 2: ");
         DataCreator testData2 = new DataCreator();
-        testData2.createSecondTypeOfData(20, testFileName2);
+        testData2.createFirstTypeOfData(20, testFileName2);
+        //testData2.createSecondTypeOfData(20, testFileName2);
 
         //reading and storing it to objects
-        firstObject = FileUtils.readJsonArrayFile("/output/" + testFileName1);
-        secondObject = FileUtils.readJsonArrayFile("/output/" + testFileName2);
+        firstArray = FileUtils.readJsonArrayFile("/output/" + testFileName1);
+        secondArray = FileUtils.readJsonArrayFile("/output/" + testFileName2);
 
         Assert.assertTrue(true);
     }
@@ -64,22 +67,22 @@ public class TestAssertJson {
         }
     }
 
-    @Test(testName = "Assert json object check", dependsOnMethods = {"createTestData"})
+    //@Test(testName = "Assert json object check", dependsOnMethods = {"createTestData"})
     public void assertJsonObjectCheck() {
         AssertJson aj = new AssertJson();
         aj.setFirstObjectName("SQL Result");
         aj.setSecondObjectName("Service Result");
 
-        JsonObject o2 = secondObject.get(2).getAsJsonObject();
-        JsonObject o1 = firstObject.get(2).getAsJsonObject();
-        /*System.out.println(o1);
-        System.out.println(o2);*/
+        JsonObject o2 = secondArray.get(2).getAsJsonObject();
+        JsonObject o1 = firstArray.get(2).getAsJsonObject();
 
         try {
             JsonObjectAssertion result;
             aj.setDoNotAssertKeys(Arrays.asList("whole sellername"));
             aj.setTransformBoolean(true);
             aj.setNormalizeDateFormat(true);
+            aj.setNormalizeSpaces(true);
+            aj.setIgnoreSeconds(true);
             result = aj.assertJsonObject(o1, o2);
 
             System.out.println(result.toString());
@@ -90,9 +93,16 @@ public class TestAssertJson {
         //Assert.assertTrue(true);
     }
 
-    /*@Test(testName = "Assert json array check", dependsOnMethods = {"assertJsonObjectCheck"})
-    public void assertJsonArrayCheck() {
+    @Test(testName = "Assert json array check", dependsOnMethods = {"createTestData"})
+    public void assertJsonArrayCheck() throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds {
+
+        AssertJson aj = new AssertJson();
+        aj.setFirstObjectName("SQL Result");
+        aj.setSecondObjectName("Service Result");
+
+        aj.assertJsonArray(firstArray, secondArray,"ID");
+
         System.out.println("\n\n ***** tbd");
-    }*/
+    }
 
 }
