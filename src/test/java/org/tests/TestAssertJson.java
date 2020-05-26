@@ -31,10 +31,10 @@ public class TestAssertJson {
         // Step 1: Creating test data
         ReportSteps.addINFO("Step 1: Creating test json array 1:");
         DataCreator testData1 = new DataCreator();
-        testData1.createFirstTypeOfData(530, testFileName1);
+        testData1.createFirstTypeOfData(13, testFileName1);
         ReportSteps.addINFO("Step 2: Creating test json array 2: ");
         DataCreator testData2 = new DataCreator();
-        testData2.createSecondTypeOfData(500, testFileName2);
+        testData2.createSecondTypeOfData(10, testFileName2);
         //testData2.createSecondTypeOfData(20, testFileName2);
 
         //reading and storing it to objects

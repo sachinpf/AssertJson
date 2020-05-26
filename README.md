@@ -20,7 +20,7 @@
             g. Boolean values need some interpretation like Y/1/Yes/"True" should be true.
             h. Name of the keys are different and needs some mapping.
 
-![JsonObjects](../AssertJson/src/test/resources/images/JsonObjects.jpg)
+![JsonObjects](../master/src/test/resources/reamMeResources/JsonObjects.jpg)
 
     B. Requirements:
         1. Ability to assert two Json Objects and return information about non equal/missing fields/values
@@ -40,3 +40,4 @@
         2. Use assertJson.assertJsonArray to assert json array, assertions are stored in JsonArrayAssertion object
         3. Use assertJson.assertJsonObject to assert json object, assertions are stored in JsonObjectAssertion object
   
+  ![SampleJsonArrayAssertionsJson.json](../master/src/test/resources/reamMeResources/SampleJsonArrayAssertionsJson.json)
