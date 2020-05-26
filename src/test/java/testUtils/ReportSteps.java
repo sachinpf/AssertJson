@@ -12,17 +12,17 @@ public class ReportSteps extends Reporter {
     }
 
     public static void addJsonToReport(String filePath, String message) {
-        Reporter.log("<a href=" + "\\JsonDeepEqual/" + filePath + ">" + message + "</a>");
+        Reporter.log("<a href=" + "\\AssertJson/" + filePath + ">" + message + "</a>");
     }
 
     public static void addJsonToReport(JsonObject obj, String message) {
         String f = FileUtils.writeToFile(obj, null);
-        Reporter.log("<a href=" + "\\JsonDeepEqual/" + f + ">" + message + "</a>");
+        Reporter.log("<a href=" + "\\AssertJson/" + f + ">" + message + "</a>");
     }
 
     public static void addJsonToReport(JsonArray obj, String message) {
         String f = FileUtils.writeToFile(obj, null);
-        Reporter.log("<a href=" + "\\JsonDeepEqual/" + f + ">" + message + "</a>");
+        Reporter.log("<a href=" + "\\AssertJson/" + f + ">" + message + "</a>");
     }
 
 }

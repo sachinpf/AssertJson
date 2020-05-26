@@ -34,3 +34,9 @@
                 ignoreDateFormat:true;
         4. Ability to ignore requested (certain) fields while asserting. Example: "_version" may be 
            present in only one object
+           
+    C. How to use it?
+        1. Initialize AssertJson object
+        2. Use assertJson.assertJsonArray to assert json array, assertions are stored in JsonArrayAssertion object
+        3. Use assertJson.assertJsonObject to assert json object, assertions are stored in JsonObjectAssertion object
+  
