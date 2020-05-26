@@ -1,4 +1,4 @@
-## Json Deep Equal
+## Assert JsonObject and JsonArray
 
     A. Background:
         Assert two Json Objects with some leniency when you have two similar big objects, but one of the 
@@ -40,4 +40,136 @@
         2. Use assertJson.assertJsonArray to assert json array, assertions are stored in JsonArrayAssertion object
         3. Use assertJson.assertJsonObject to assert json object, assertions are stored in JsonObjectAssertion object
   
-  ![SampleJsonArrayAssertionsJson.json](../master/src/test/resources/reamMeResources/SampleJsonArrayAssertionsJson.json)
+  
+    D. Sample Json Array assertion
+      {
+        "firstArraySize": 15,
+        "secondArraySize": 11,
+        "status": false,
+        "statusMessage": "Asserted first 15 objects from first json array with only matching objects by ID in second json array.",
+        "countOfFailedObjects": 5,
+        "missingIDs": [
+          12.0,
+          13.0,
+          14.0,
+          15.0
+        ],
+        "NonEqualObjects": [
+          {
+            "ID": "5.0",
+            "status": false,
+            "missingKeysInObject1": "[.book info.sellingcurrency, .book info.website, .book info.book_name, .book info.book_price, .book info.publication_year]",
+            "missingKeysInObject2": "[.book info.book name, .book info.publication year, .book info.book price, .book info.selling currency, .book info.web site, .bookinfo.sellingcurrency, .bookinfo.website, .bookinfo.bookname, .bookinfo.category, .bookinfo.bookprice, .bookinfo.publicationyear]",
+            "NonEqualKeys": [
+              {
+                "keyName": ".book info.category",
+                "SQL Result value": [
+                  "Fiction",
+                  "Drama",
+                  "Suspense"
+                ],
+                "Service Result value": "[Story,PτoJnd0▐,Romance,∞ms,Suspense]"
+              },
+              {
+                "keyName": ".inventoryinfo.decimalvalue",
+                "SQL Result value": 11.0,
+                "Service Result value": 10.0
+              }
+            ]
+          },
+          {
+            "ID": "9.0",
+            "status": false,
+            "missingKeysInObject1": "[.book info.sellingcurrency, .book info.website, .book info.book_name, .book info.book_price, .book info.publication_year]",
+            "missingKeysInObject2": "[.book info.book name, .book info.publication year, .book info.book price, .book info.selling currency, .book info.web site, .bookinfo.sellingcurrency, .bookinfo.website, .bookinfo.bookname, .bookinfo.category, .bookinfo.bookprice, .bookinfo.publicationyear]",
+            "NonEqualKeys": [
+              {
+                "keyName": ".book info.category",
+                "SQL Result value": [
+                  "Fiction",
+                  "Drama",
+                  "Suspense"
+                ],
+                "Service Result value": "[Story,▌£RΩ(╟┌P,Romance,tâ╬,Suspense]"
+              }
+            ]
+          },
+          {
+            "ID": "4.0",
+            "status": false,
+            "missingKeysInObject1": "[.book info.sellingcurrency, .book info.website, .book info.book_name, .book info.book_price, .book info.publication_year]",
+            "missingKeysInObject2": "[.book info.book name, .book info.publication year, .book info.book price, .book info.selling currency, .book info.web site, .bookinfo.sellingcurrency, .bookinfo.website, .bookinfo.bookname, .bookinfo.category, .bookinfo.bookprice, .bookinfo.publicationyear]",
+            "NonEqualKeys": [
+              {
+                "keyName": ".book info.category",
+                "SQL Result value": [
+                  "Fiction",
+                  "Drama",
+                  "Suspense"
+                ],
+                "Service Result value": "[Story,\n¢╜ÉL*∙┌,Romance,\b'¬,Suspense]"
+              }
+            ]
+          },
+          {
+            "ID": "3.0",
+            "status": false,
+            "missingKeysInObject1": "[.other1, .other2]",
+            "missingKeysInObject2": "[.test json object array0.test 1, .test json object array0.test 2, .test json object array1.test 1, .test json object array1.test 2, .number array, .seller info.whole sellername]",
+            "NonEqualKeys": [
+              {
+                "keyName": ".decimal array",
+                "SQL Result value": [
+                  2.888,
+                  3.999,
+                  9.18,
+                  1880.8
+                ],
+                "Service Result value": [
+                  2.0,
+                  3.999,
+                  9.18,
+                  1880.8
+                ]
+              },
+              {
+                "keyName": ".inventory info.auto reorder",
+                "SQL Result value": "N",
+                "Service Result value": false
+              },
+              {
+                "keyName": ".inventory info.last stock checked date",
+                "SQL Result value": "2019-04-09 11:59:23",
+                "Service Result value": "2019-04-09T11:59:25Z"
+              },
+              {
+                "keyName": ".seller info.other text with spaces",
+                "SQL Result value": "some    text to      normalize      spaces",
+                "Service Result value": "some text to normalize spaces"
+              }
+            ]
+          },
+          {
+            "ID": "8.0",
+            "status": false,
+            "missingKeysInObject1": "[.book info.sellingcurrency, .book info.website, .book info.book_name, .book info.book_price, .book info.publication_year]",
+            "missingKeysInObject2": "[.book info.book name, .book info.publication year, .book info.book price, .book info.selling currency, .book info.web site, .bookinfo.sellingcurrency, .bookinfo.website, .bookinfo.bookname, .bookinfo.category, .bookinfo.bookprice, .bookinfo.publicationyear]",
+            "NonEqualKeys": [
+              {
+                "keyName": ".book info.category",
+                "SQL Result value": [
+                  "Fiction",
+                  "Drama",
+                  "Suspense"
+                ],
+                "Service Result value": "[Story,₧]â√\u0000ñ▄X,Romance,╨╫┴,Suspense]"
+              },
+              {
+                "keyName": ".inventoryinfo.outofstock",
+                "SQL Result value": false,
+                "Service Result value": true
+              }
+            ]
+          }
+        ]
+      }
