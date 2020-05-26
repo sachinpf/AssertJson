@@ -2,61 +2,69 @@
   {
     "ID": 1,
     "Book Info": {
-      "Book_Name": "MY BOOK 1",
-      "Category": "[DRAMA,Suspense,Fiction]",
-      "Publication_Year": "2010",
-      "Book_Price": "20",
+      "Book Name": "My Book 1",
+      "Category": [
+        "Fiction",
+        "Drama",
+        "Suspense"
+      ],
+      "Publication Year": 2010,
+      "Book Price": 20.00,
       "Selling Currency": "US-$",
       "Web Site": "www.site.com/book_id?=549584"
     },
     "Inventory Info": {
-      "out of stock": "false",
-      "AutoReorder": false,
-      "Last Stock Checked Date": "2019 April 09 11:59:23",
-      "decimal value": "12"
+      "Out Of Stock": false,
+      "Auto Reorder": "N",
+      "Last StockCheckedDate": "2019-04-09T11:59:23Z",
+      "Decimal Value": 12
     },
     "Countries Sold": {
-      "India": 1,
-      "CAN": 0,
-      "USA": 1
+      "USA": true,
+      "CAN": false,
+      "India": true
     },
     "Seller Info": {
-      "WholeSellerName": "MyBookStore",
-      "WholeSellerCoordinates": {
-        "X": "-3.7037901999999576",
-        "Y": "40.23"
+      "Whole Seller Name": "MyBookStore",
+      "Whole Seller Coordinates": {
+        "X": -3.7037901999999576,
+        "Y": 40.00023
       },
-      "SellerPhoneNumber": "77777777"
+      "Seller Phone Number": 9999999999
     }
   },
   {
     "ID": 2,
     "Book Info": {
-      "Book_Name": "MY BOOK 2",
-      "Category": "[Suspense,DRAMA,Fiction]",
-      "Publication_Year": "2010",
-      "Book_Price": "20",
+      "Book Name": "My Book 1",
+      "Category": [
+        "Fiction",
+        "Drama",
+        "Suspense"
+      ],
+      "Publication Year": 2010,
+      "Book Price": 20.00,
       "Selling Currency": "US-$",
-      "WebSite": "www.site.com/book_id?=549584"
+      "Web Site": "www.site.com/book_id?=549584"
     },
     "Inventory Info": {
-      "out of stock": "false",
-      "Auto Reorder": false,
-      "Last Stock Checked Date": "2019 April 09 11:59:23",
-      "decimal value": "12"
+      "Out Of Stock": false,
+      "Auto Reorder": "N",
+      "Last Stock Checked Date": "2019-04-09T11:59:23Z",
+      "Decimal Value": 12
     },
-    "CountriesSold": {
-      "India": 1,
-      "CAN": 0,
-      "USA": 1
+    "Countries Sold": {
+      "USA": true,
+      "CAN": false,
+      "India": true
     },
     "Seller Info": {
       "Whole Seller Name": "MyBookStore",
       "Whole Seller Coordinates": {
-        "X": "-3.7037901999999576",
-        "Y": "40.23"
+        "X": -3.7037901999999576,
+        "Y": 40.00023
       },
-      "Seller Phone Number": "888888888"
+      "Seller Phone Number": 9999999999
     }
   },
   {

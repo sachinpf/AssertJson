@@ -8,7 +8,8 @@ public class RandomGenerator {
     public static String randomString(int length) {
         byte[] array = new byte[length]; // length is bounded by 7
         new Random().nextBytes(array);
-        return new String(array, Charset.forName("UTF-8"));
+        //return new String(array);
+        return new String(array, Charset.forName("IBM437")); //UTF-8, ISO-8859-1
     }
 
     public static int randomInt(int length) {

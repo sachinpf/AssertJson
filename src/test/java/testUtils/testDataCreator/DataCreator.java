@@ -47,7 +47,8 @@ public class DataCreator {
                     jsonObject1.add("BookInfo", bookInfo.toJsonObject());
 
                 } else {
-                    jsonObject1.addProperty("Book ID", i);
+                    //                    jsonObject1.addProperty("Book ID", i);
+                    jsonObject1.addProperty("ID", i);
                     jsonObject1.add("Book Info", bookInfo.toJsonObject());
 
                 }
@@ -66,7 +67,8 @@ public class DataCreator {
                     jsonObject2.add("BookInfo", bookInfo.toJsonObject());
 
                 } else {
-                    jsonObject2.addProperty("Book ID", i);
+//                    jsonObject2.addProperty("Book ID", i);
+                    jsonObject2.addProperty("ID", i);
                     jsonObject2.add("Book Info", bookInfo.toJsonObject());
                 }
 
@@ -85,7 +87,8 @@ public class DataCreator {
                 if (first) {
                     jsonObject3.addProperty("ID", i);
                 } else {
-                    jsonObject3.addProperty("Book ID", i);
+//                    jsonObject3.addProperty("Book ID", i);
+                    jsonObject3.addProperty("ID", i);
                 }
                 testArray.add(jsonObject3);
                 i++;
@@ -95,9 +98,11 @@ public class DataCreator {
             {
                 if (first)
                     jsonObject4.addProperty("ID", i);
-                else
-                    jsonObject4.addProperty("Book ID", i);
+                else {
+                  //  jsonObject4.addProperty("Book ID", i);
+                    jsonObject4.addProperty("ID", i);
 
+                }
                 testArray.add(jsonObject4);
                 i++;
             }

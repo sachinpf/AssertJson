@@ -1,4 +1,4 @@
-package org.planet.earth.jsonUtils;
+package org.planet.Json.jsonUtils;
 
 
 import com.google.gson.*;

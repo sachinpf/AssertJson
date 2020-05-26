@@ -2,12 +2,13 @@ package org.tests;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.planet.earth.jsonUtils.AssertJson;
-import org.planet.earth.jsonUtils.JsonObjectAssertion;
-import org.planet.earth.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
-import org.planet.earth.jsonUtils.exceptions.JsonArraySizeExceeds;
-import org.planet.earth.jsonUtils.exceptions.NoJsonObjectArray;
-import org.planet.earth.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
+import org.planet.Json.jsonUtils.AssertJson;
+import org.planet.Json.jsonUtils.JsonArrayAssertion;
+import org.planet.Json.jsonUtils.JsonObjectAssertion;
+import org.planet.Json.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.Json.jsonUtils.exceptions.JsonArraySizeExceeds;
+import org.planet.Json.jsonUtils.exceptions.NoJsonObjectArray;
+import org.planet.Json.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import testUtils.FileUtils;
@@ -30,10 +31,10 @@ public class TestAssertJson {
         // Step 1: Creating test data
         ReportSteps.addINFO("Step 1: Creating test json array 1:");
         DataCreator testData1 = new DataCreator();
-        testData1.createFirstTypeOfData(20, testFileName1);
+        testData1.createFirstTypeOfData(530, testFileName1);
         ReportSteps.addINFO("Step 2: Creating test json array 2: ");
         DataCreator testData2 = new DataCreator();
-        testData2.createFirstTypeOfData(20, testFileName2);
+        testData2.createSecondTypeOfData(500, testFileName2);
         //testData2.createSecondTypeOfData(20, testFileName2);
 
         //reading and storing it to objects
@@ -44,25 +45,24 @@ public class TestAssertJson {
     }
 
     //do not assert settings
-   //@Test(testName = "Test doNotAssertKeys")
+    //@Test(testName = "Test doNotAssertKeys")
     public void assertDoNotAssertKey() {
         AssertJson aj = new AssertJson();
         aj.setFirstObjectName("SQL Result");
         aj.setSecondObjectName("Service Result");
-        aj.setDoNotAssertKeys(Arrays.asList("Phone Number","test 1"));
+        aj.setDoNotAssertKeys(Arrays.asList("Phone Number", "test 1"));
 
         JsonObject firstObject = FileUtils.readJsonObjectFile("/sampleJsons/doNotAssertKeys1.json");
         JsonObject secondObject = FileUtils.readJsonObjectFile("/sampleJsons/doNotAssertKeys2.json");
 
         JsonObjectAssertion result;
 
-        try{
+        try {
             result = aj.assertJsonObject(firstObject, secondObject);
             String assertString = result.getMissingKeysInObject1() + result.getMissingKeysInObject2();
             Assert.assertTrue(assertString.equals("[.inventory info.out of stock]"));
             System.out.println("Test doNOtAssertKeys passed");
-        }
-        catch(ExceedsLimitOfObjectSize e){
+        } catch (ExceedsLimitOfObjectSize e) {
             e.printStackTrace();
         }
     }
@@ -93,16 +93,19 @@ public class TestAssertJson {
         //Assert.assertTrue(true);
     }
 
-    @Test(testName = "Assert json array check", dependsOnMethods = {"createTestData"})
-    public void assertJsonArrayCheck() throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds {
+   @Test(testName = "Assert json array check", dependsOnMethods = {"createTestData"})
+    public void assertJsonArrayCheck()
+            throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds, ExceedsLimitOfObjectSize {
 
         AssertJson aj = new AssertJson();
         aj.setFirstObjectName("SQL Result");
         aj.setSecondObjectName("Service Result");
+       // aj.setAssertFirstXRows(5000);
 
-        aj.assertJsonArray(firstArray, secondArray,"ID");
+        JsonArrayAssertion arrayAssertion = aj.assertJsonArray(firstArray, secondArray, "ID");
 
-        System.out.println("\n\n ***** tbd");
+        ReportSteps.addINFO("assertJsonArrayCheck results: ");
+        ReportSteps.addJsonToReport(arrayAssertion.getAsJsonObject(),"Array assertion results");
     }
 
 }

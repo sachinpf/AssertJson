@@ -1,4 +1,4 @@
-package org.planet.earth.jsonUtils.support;
+package org.planet.Json.jsonUtils.support;
 
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;

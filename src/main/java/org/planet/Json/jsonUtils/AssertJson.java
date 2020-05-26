@@ -1,4 +1,4 @@
-package org.planet.earth.jsonUtils;
+package org.planet.Json.jsonUtils;
 
 
 import com.google.gson.Gson;
@@ -6,18 +6,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
-import org.planet.earth.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
-import org.planet.earth.jsonUtils.exceptions.JsonArraySizeExceeds;
-import org.planet.earth.jsonUtils.exceptions.NoJsonObjectArray;
-import org.planet.earth.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
-import org.planet.earth.jsonUtils.support.DateObject;
-import org.planet.earth.jsonUtils.support.Flatten;
-import org.planet.earth.jsonUtils.support.KeyIndexCallable;
+import org.planet.Json.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.Json.jsonUtils.exceptions.JsonArraySizeExceeds;
+import org.planet.Json.jsonUtils.exceptions.NoJsonObjectArray;
+import org.planet.Json.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
+import org.planet.Json.jsonUtils.support.DateObject;
+import org.planet.Json.jsonUtils.support.Flatten;
+import org.planet.Json.jsonUtils.support.KeyIndexCallable;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public final class AssertJson {
     /*
@@ -54,7 +55,6 @@ public final class AssertJson {
 
     private List<String> doNotAssertKeys;
 
-    private int maxFailureCount; //applicable for JsonArray (having many jsonObjects) to be compared.
     private int assertFirstXRows; //applicable for Json Array, iterates only first X numbers from firstArray
     private boolean normalizeDateFormat;
     private boolean transformBoolean; //#9 and #10
@@ -79,7 +79,6 @@ public final class AssertJson {
         caseSensitive = false;
 
         //JsonArray assertion
-        maxFailureCount = 50;
         assertFirstXRows = 1000;
 
         //depending on other object
@@ -93,9 +92,9 @@ public final class AssertJson {
 
     //method to assert Two Json Arrays by given ID
     //just pass in the IdKeyName
-    public List<JsonObjectAssertion> assertJsonArray(JsonArray firstArray,
-                                                     JsonArray secondArray,
-                                                     String IdKeyName)
+    public JsonArrayAssertion assertJsonArray(JsonArray firstArray,
+                                              JsonArray secondArray,
+                                              String IdKeyName)
             throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds {
 
         //Step 1: ensuring none of the arrays are null or size zero
@@ -111,24 +110,43 @@ public final class AssertJson {
             throw new JsonArraySizeExceeds();
 
         //Step 4: creating ID for each element in SecondArray
-        int maxSize = Math.min(firstArray.size(), assertFirstXRows);
         Map<Object, Integer> indexForSecondArray = getKeyIndices(IdKeyName, secondArray, IdKeyName);
 
-
         //Step 5: asserting two json objects within JsonArray
+        //List<JsonObjectAssertion> arrayAssertions = new ArrayList<>();
 
+        JsonArrayAssertion arrayAssertions = new JsonArrayAssertion();
 
-        /*for (int i = 0; i < maxSize; i++) {
-            JsonObject obj1 = firstArray.get(i).getAsJsonObject();
-            Object id = gson.fromJson(obj1.get(IdKeyName), Object.class);
-            Spliterator<JsonElement> spliterator = secondArray.spliterator();
+        //asserting now
+        int maxSize = Math.min(firstArray.size(), assertFirstXRows);
+        //Note: by default asserts only first 1000 rows from first Array.
+        //this limit can be changed using setAssertFirstXRows
+        StreamSupport.stream(firstArray.spliterator(), true)
+                .parallel()
+                .limit(maxSize)
+                .forEach(o ->
+                {
+                    JsonObject obj1 = o.getAsJsonObject();
+                    Object id = gson.fromJson(obj1.get(IdKeyName), Object.class);
+                    JsonObject obj2;
+                    try {
+                        if (!indexForSecondArray.containsKey(id)) {
+                            arrayAssertions.addMissingIDs(id);
+                        } else {
+                            obj2 = secondArray.get(
+                                    indexForSecondArray.get(id)).getAsJsonObject();
+                            arrayAssertions.addJsonObjectAssertions(assertJsonObject(obj1, obj2, id));
+                        }
+                    } catch (ExceedsLimitOfObjectSize exceedsLimitOfObjectSize) {
+                        exceedsLimitOfObjectSize.printStackTrace();
+                    }
+                });
 
-            System.out.println("spliterator.trySplit(): " + spliterator.estimateSize());
-
-            JsonObject obj2 = findObjectById(id, secondArray);
-        }*/
-
-        return null;
+        //setting message & other attributes
+        arrayAssertions.setFirstArraySize(firstArray.size());
+        arrayAssertions.setSecondArraySize(secondArray.size());
+        arrayAssertions.setStatusMessage("Asserted first " + maxSize + " objects from first json array with only matching objects by ID in second json array.");
+        return arrayAssertions.getFailedOnly();
     }
 
     //All private methods for JsonArray assertion
@@ -166,10 +184,9 @@ public final class AssertJson {
             }
         }
 
-        System.out.println("return Map: " + returnMap);
-
         return returnMap;
     }
+
 
     //method to assert Two Json Objects
     public JsonObjectAssertion assertJsonObject(JsonObject firstObject,
@@ -243,7 +260,6 @@ public final class AssertJson {
                     for (JsonObject obj : differences) {
                         if (obj.size() > 0) {
                             assertion.setStatus(false);
-                            assertion.setStatusMessage("assertion failed.");
                             assertion.addNonEqualKeys(obj);
                         }
                     }
@@ -321,17 +337,12 @@ public final class AssertJson {
                     }
                 }
             }//instance of array ends
-            else {
-                System.out.println("**** Unidentified object classes: ");
-                System.out.println(firstObjectValue.getClass());
-                System.out.println(secondObjectValue.getClass());
-            }//all other instances, if identified will be printed on console
         }
 
         if (!status) {
-            returnObj.addProperty("keyName: ", currentKey);
-            returnObj.add((firstObjectName + " value: "), jsonElement1);
-            returnObj.add((secondObjectName + " value: "), jsonElement2);
+            returnObj.addProperty("keyName", currentKey);
+            returnObj.add((firstObjectName + " value"), jsonElement1);
+            returnObj.add((secondObjectName + " value"), jsonElement2);
         }
 
         return returnObj;
@@ -368,9 +379,6 @@ public final class AssertJson {
                 .collect(Collectors.toList());
     }
 
-    public void setMaxFailureCount(int maxFailureCount) {
-        this.maxFailureCount = maxFailureCount;
-    }
 
     public void setNormalizeDateFormat(boolean normalizeDateFormat) {
         this.normalizeDateFormat = normalizeDateFormat;

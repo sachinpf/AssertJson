@@ -1,4 +1,4 @@
-package org.planet.earth.jsonUtils.exceptions;
+package org.planet.Json.jsonUtils.exceptions;
 
 public class IDKeyNameNotFound extends Exception{
     public IDKeyNameNotFound(){

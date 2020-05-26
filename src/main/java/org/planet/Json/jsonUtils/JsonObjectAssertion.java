@@ -1,5 +1,6 @@
-package org.planet.earth.jsonUtils;
+package org.planet.Json.jsonUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
@@ -14,7 +15,6 @@ public class JsonObjectAssertion {
     private String missingKeysInObject1;
     private String missingKeysInObject2;
     private JsonArray nonEqualKeys;
-    private String statusMessage;
 
     public JsonObjectAssertion() {
         ID = null;
@@ -24,7 +24,6 @@ public class JsonObjectAssertion {
         missingKeysInObject2 = "";
         nonEqualKeys = new JsonArray();
         status = true;
-        statusMessage = "No assertions found";
     }
 
     public boolean isStatus() {
@@ -90,14 +89,6 @@ public class JsonObjectAssertion {
         this.nonEqualKeys.add(t);
     }
 
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,6 +106,24 @@ public class JsonObjectAssertion {
     @Override
     public int hashCode() {
         return Objects.hash(isStatus(), getID(), getObject1Name(), getObject2Name(), getMissingKeysInObject1(), getMissingKeysInObject2(), getNonEqualKeys());
+    }
+
+    public JsonObject getAsJsonObject(){
+        Gson gson = new Gson();
+        JsonObject returnObject = new JsonObject();
+        if(ID!=null)
+            returnObject.addProperty("ID", String.valueOf(ID));
+
+        returnObject.addProperty("status",status);
+
+        if(!missingKeysInObject1.equals(""))
+            returnObject.addProperty("missingKeysInObject1",missingKeysInObject1);
+        if(!missingKeysInObject2.equals(""))
+            returnObject.addProperty("missingKeysInObject2",missingKeysInObject2);
+        if(nonEqualKeys.size()>0)
+            returnObject.add("NonEqualKeys",nonEqualKeys);
+
+        return returnObject;
     }
 
     @Override

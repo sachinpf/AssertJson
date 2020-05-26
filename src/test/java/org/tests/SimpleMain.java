@@ -1,11 +1,20 @@
 package org.tests;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class SimpleMain {
 
     public static void main(String... args){
        // System.out.println(Runtime.getRuntime().availableProcessors());
-        long a = 1000;
-        Number b = a;
-        System.out.println(b);
+        List<String> lst = new ArrayList<>();
+        for(int i=0;i<10;i++) {
+            lst.add(i+" ");
+        }
+
+        lst.stream().parallel().forEach(System.out::print);
+        System.out.println("\n");
+        lst.stream().forEach(System.out::print);
+
     }
 }

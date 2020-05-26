@@ -1,9 +1,9 @@
-package org.planet.earth.jsonUtils.support;
+package org.planet.Json.jsonUtils.support;
 
 import com.google.gson.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.planet.earth.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.Json.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
 
 import java.util.*;
 import java.util.stream.Collectors;
