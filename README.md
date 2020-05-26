@@ -20,7 +20,7 @@
             g. Boolean values need some interpretation like Y/1/Yes/"True" should be true.
             h. Name of the keys are different and needs some mapping.
 
-![JsonObjects](../JsonDeepEqual/src/test/resources/images/JsonObjects.jpg)
+![JsonObjects](../AssertJson/src/test/resources/images/JsonObjects.jpg)
 
     B. Requirements:
         1. Ability to assert two Json Objects and return information about non equal/missing fields/values
