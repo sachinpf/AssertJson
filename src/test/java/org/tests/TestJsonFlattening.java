@@ -1,7 +1,7 @@
 package org.tests;
 
 import com.google.gson.JsonObject;
-import org.planet.Json.jsonUtils.support.Flatten;
+import org.planet.json.tasks.Flatten;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import testUtils.FileUtils;

@@ -1,4 +1,4 @@
-package org.planet.Json.jsonUtils;
+package org.planet.json.utils;
 
 import java.util.ArrayList;
 import java.util.List;

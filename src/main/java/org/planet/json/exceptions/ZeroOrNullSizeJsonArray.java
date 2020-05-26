@@ -1,4 +1,4 @@
-package org.planet.Json.jsonUtils.exceptions;
+package org.planet.json.exceptions;
 
 public class ZeroOrNullSizeJsonArray extends Exception{
     public ZeroOrNullSizeJsonArray(){

@@ -1,4 +1,4 @@
-package org.planet.Json.jsonUtils;
+package org.planet.json.utils;
 
 
 import com.google.gson.Gson;
@@ -6,13 +6,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
-import org.planet.Json.jsonUtils.exceptions.ExceedsLimitOfObjectSize;
-import org.planet.Json.jsonUtils.exceptions.JsonArraySizeExceeds;
-import org.planet.Json.jsonUtils.exceptions.NoJsonObjectArray;
-import org.planet.Json.jsonUtils.exceptions.ZeroOrNullSizeJsonArray;
-import org.planet.Json.jsonUtils.support.DateObject;
-import org.planet.Json.jsonUtils.support.Flatten;
-import org.planet.Json.jsonUtils.support.KeyIndexCallable;
+import org.planet.json.exceptions.ExceedsLimitOfObjectSize;
+import org.planet.json.exceptions.JsonArraySizeExceeds;
+import org.planet.json.exceptions.NoJsonObjectArray;
+import org.planet.json.exceptions.ZeroOrNullSizeJsonArray;
+import org.planet.json.tasks.DateObject;
+import org.planet.json.tasks.Flatten;
+import org.planet.json.tasks.KeyIndexCallable;
 
 import java.time.LocalDateTime;
 import java.util.*;
