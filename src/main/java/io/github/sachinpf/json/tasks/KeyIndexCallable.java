@@ -1,8 +1,8 @@
-package org.planet.json.tasks;
+package io.github.sachinpf.json.tasks;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import org.planet.json.exceptions.IDKeyNameNotFound;
+import io.github.sachinpf.json.exceptions.IDKeyNameNotFound;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,13 +2,13 @@ package org.tests;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.planet.json.utils.AssertJson;
-import org.planet.json.utils.JsonArrayAssertion;
-import org.planet.json.utils.JsonObjectAssertion;
-import org.planet.json.exceptions.ExceedsLimitOfObjectSize;
-import org.planet.json.exceptions.JsonArraySizeExceeds;
-import org.planet.json.exceptions.NoJsonObjectArray;
-import org.planet.json.exceptions.ZeroOrNullSizeJsonArray;
+import io.github.sachinpf.json.utils.AssertJson;
+import io.github.sachinpf.json.utils.JsonArrayAssertion;
+import io.github.sachinpf.json.utils.JsonObjectAssertion;
+import io.github.sachinpf.json.exceptions.ExceedsLimitOfObjectSize;
+import io.github.sachinpf.json.exceptions.JsonArraySizeExceeds;
+import io.github.sachinpf.json.exceptions.NoJsonObjectArray;
+import io.github.sachinpf.json.exceptions.ZeroOrNullSizeJsonArray;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import testUtils.FileUtils;
@@ -93,19 +93,19 @@ public class TestAssertJson {
         //Assert.assertTrue(true);
     }
 
-   @Test(testName = "Assert json array check", dependsOnMethods = {"createTestData"})
+    @Test(testName = "Assert json array check", dependsOnMethods = {"createTestData"})
     public void assertJsonArrayCheck()
             throws ZeroOrNullSizeJsonArray, NoJsonObjectArray, JsonArraySizeExceeds, ExceedsLimitOfObjectSize {
 
         AssertJson aj = new AssertJson();
         aj.setFirstObjectName("SQL Result");
         aj.setSecondObjectName("Service Result");
-       // aj.setAssertFirstXRows(5000);
+        // aj.setAssertFirstXRows(5000);
 
         JsonArrayAssertion arrayAssertion = aj.assertJsonArray(firstArray, secondArray, "ID");
 
         ReportSteps.addINFO("assertJsonArrayCheck results: ");
-        ReportSteps.addJsonToReport(arrayAssertion.getAsJsonObject(),"Array assertion results");
+        ReportSteps.addJsonToReport(arrayAssertion.getAsJsonObject(), "Array assertion results");
     }
 
 }

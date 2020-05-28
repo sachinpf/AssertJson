@@ -1,4 +1,4 @@
-package org.planet.json.tasks;
+package io.github.sachinpf.json.tasks;
 
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;

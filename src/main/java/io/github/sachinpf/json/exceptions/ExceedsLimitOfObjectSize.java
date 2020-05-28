@@ -1,4 +1,4 @@
-package org.planet.json.exceptions;
+package io.github.sachinpf.json.exceptions;
 
 public class ExceedsLimitOfObjectSize extends Exception {
     //thrown only for JsonObject

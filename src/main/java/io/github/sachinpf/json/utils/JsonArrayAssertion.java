@@ -1,4 +1,4 @@
-package org.planet.json.utils;
+package io.github.sachinpf.json.utils;
 
 import java.util.ArrayList;
 import java.util.List;

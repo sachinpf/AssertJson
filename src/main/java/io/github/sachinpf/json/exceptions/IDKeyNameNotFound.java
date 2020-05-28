@@ -1,4 +1,4 @@
-package org.planet.json.exceptions;
+package io.github.sachinpf.json.exceptions;
 
 public class IDKeyNameNotFound extends Exception{
     public IDKeyNameNotFound(){
