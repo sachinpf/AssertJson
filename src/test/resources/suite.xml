@@ -2,7 +2,7 @@
 <suite name="Json Deep Equals" verbose="2">
     <test name="Flatten Json">
         <classes>
-<!--            <class name="org.tests.TestJsonFlattening"/>-->
+            <class name="org.tests.TestJsonFlattening"/>
             <class name="org.tests.TestAssertJson"/>
         </classes>
     </test>
